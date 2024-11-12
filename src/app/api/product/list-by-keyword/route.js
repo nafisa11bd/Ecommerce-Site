@@ -3,11 +3,10 @@ import { NextResponse } from "next/server";
 export async function GET(req, res) {
   try {
     let { searchParams } = new URL(req.url);
-    let id = parseInt(searchParams.get("id"));
+    let keyword = searchParams.get("keyword");
     const prisma = new PrismaClient();
-    const result = await prisma.products.findUnique({
-      where: { id: id },
-      include: { product_details: true },
+    const result = await prisma.products.findMany({
+      where: { title: { contains: keyword } },
     });
     return NextResponse.json({ status: "success", data: result });
   } catch (e) {
